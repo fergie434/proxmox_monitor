@@ -4,12 +4,6 @@ Proxmox monitoring script which uses the proxmox ve API to check all lxc contain
 
 Only VM's/containers with 'Start at boot' set to 'enabled' will be started, all others will be ignored.
 
-## Install it from GIT
-
-```bash
-pip3 install git+https://github.com/fergie434/log_helper
-```
-
 ## Usage
 
 ### Initial Setup
