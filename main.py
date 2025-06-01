@@ -12,16 +12,26 @@ password = os.getenv('password')
 proxmox = ProxmoxAPI(proxmox_server, user=username, password=password, verify_ssl=False)
 
 def main():
-    nodes = proxmox.nodes.get()
-    for node in nodes:
+    for node in proxmox.nodes.get():
         node_obj = proxmox.nodes(node['node'])
         lxc_list = node_obj.lxc.get()
+
+        # Check all lxc containers are running
         for lxc in lxc_list:
             lxc_config = node_obj.lxc(lxc['vmid']).config.get()
-            ...
+            if lxc_config['onboot'] == 1and lxc['status'] == 'stopped':
+                node_obj.lxc(lxc['vmid']).status.start.post()
+                print(f"Started {lxc['name']}")
 
+        # Check all qemu VM's are running
+        for vm in node_obj.qemu.get():
+            vm_config = node_obj.qemu(vm['vmid']).config.get()
+            if not 'onboot' in vm_config.keys():
+                vm_config['onboot'] = 0
+            if vm_config['onboot'] == 1 and vm['status'] == 'stopped':
+                node_obj.qemu(vm['vmid']).status.start.post()
+                print(f"Started {vm['name']}")
 
-    ...
 
 if __name__ == '__main__':
     main()
