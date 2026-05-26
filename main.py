@@ -20,6 +20,8 @@ def main(logger):
         # Check all lxc containers are running
         for lxc in lxc_list:
             lxc_config = node_obj.lxc(lxc['vmid']).config.get()
+            if 'onboot' not in lxc_config.keys():
+                continue
             if lxc_config['onboot'] == 1 and lxc['status'] == 'stopped':
                 node_obj.lxc(lxc['vmid']).status.start.post()
                 logger.info(f"Started {lxc['name']}")
