@@ -17,6 +17,10 @@ def main(logger):
         node_obj = proxmox.nodes(node['node'])
         lxc_list = node_obj.lxc.get()
 
+        # Don't run at first boot
+        if node['uptime'] < 700:
+            return
+
         # Check all lxc containers are running
         for lxc in lxc_list:
             lxc_config = node_obj.lxc(lxc['vmid']).config.get()
