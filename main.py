@@ -18,7 +18,7 @@ def main(logger):
         lxc_list = node_obj.lxc.get()
 
         # Don't run at first boot
-        if node['uptime'] < 700:
+        if node['uptime'] < 300:
             return
 
         # Check all lxc containers are running
